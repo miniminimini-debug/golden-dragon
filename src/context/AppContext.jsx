@@ -20,6 +20,7 @@ function buildInitialState() {
     weeks: {},
     activeTab: 'dashboard',
     selectedPlayer: 'emiliano',
+    currentUser: null,
   };
 }
 
@@ -57,6 +58,13 @@ function reducer(state, action) {
         },
       };
     }
+
+    case 'SET_CURRENT_USER':
+      return {
+        ...state,
+        currentUser: action.player,
+        selectedPlayer: action.player || state.selectedPlayer,
+      };
 
     case 'SET_TAB':
       return { ...state, activeTab: action.tab };
