@@ -6,6 +6,7 @@ import VotingPanel from './components/VotingPanel.jsx';
 import WeekSetup from './components/WeekSetup.jsx';
 import WeekSummary from './components/WeekSummary.jsx';
 import PlayerSelect from './components/PlayerSelect.jsx';
+import Rules from './components/Rules.jsx';
 import { PLAYER_META } from './components/PlayerCard.jsx';
 import { getWeekId } from './utils/dates.js';
 
@@ -14,6 +15,7 @@ const TABS = [
   { id: 'log',       label: 'Log',     icon: '📝' },
   { id: 'votes',     label: 'Votes',   icon: '🗳️' },
   { id: 'summary',   label: 'Results', icon: '🏆' },
+  { id: 'rules',     label: 'Rules',   icon: '📜' },
 ];
 
 function SwitchModal({ currentUser, onSwitch, onClose }) {
@@ -94,6 +96,7 @@ function AppShell() {
         {state.activeTab === 'log'       && <DailyLog currentUser={currentUser} />}
         {state.activeTab === 'votes'     && <VotingPanel currentUser={currentUser} />}
         {state.activeTab === 'summary'   && <WeekSummary currentUser={currentUser} />}
+        {state.activeTab === 'rules'     && <Rules />}
       </main>
 
       <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-zinc-900/90 backdrop-blur border-t border-zinc-800 flex z-40">
