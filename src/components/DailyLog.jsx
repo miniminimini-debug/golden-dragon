@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { PLAYER_META } from './PlayerCard.jsx';
 import { calcWakeUpPoints, calcWorkPoints } from '../utils/points.js';
-import { todayKey, dayLabel, isWeekday, getWeekDays } from '../utils/dates.js';
-
-const PLAYERS = ['emiliano', 'nico', 'bruno'];
+import { todayKey, dayLabel, isWeekday } from '../utils/dates.js';
 
 function Section({ title, children }) {
   return (
@@ -26,7 +24,7 @@ function PointsBadge({ points, max }) {
 export default function DailyLog({ currentUser }) {
   const { state, dispatch } = useApp();
   const today = todayKey();
-  const player = currentUser || state.selectedPlayer;
+  const player = currentUser;
   const week = state.weeks[state.currentWeekId];
   const entry = week?.days?.[today]?.[player] || {};
   const meta = PLAYER_META[player];
@@ -93,10 +91,6 @@ export default function DailyLog({ currentUser }) {
     setTomorrowHours('');
   }
 
-  function useDayOff() {
-    dispatch({ type: 'USE_DAY_OFF', player, date: today });
-  }
-
   const previewWakePoints = calcWakeUpPoints(wakeTime);
   const previewWorkPoints = todayWorkGoal
     ? calcWorkPoints(parseFloat(achievedHours) || 0, todayWorkGoal.hours)
@@ -104,34 +98,18 @@ export default function DailyLog({ currentUser }) {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      {/* Player selector */}
-      <div className="flex gap-2">
-        {PLAYERS.map((p) => {
-          const m = PLAYER_META[p];
-          return (
-            <button
-              key={p}
-              onClick={() => dispatch({ type: 'SET_PLAYER', player: p })}
-              className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
-                state.selectedPlayer === p
-                  ? `bg-zinc-800 ${m.text} ring-1 ${m.ring}`
-                  : 'bg-zinc-900 text-zinc-500'
-              }`}
-            >
-              {m.emoji} {m.label}
-            </button>
-          );
-        })}
-      </div>
 
-      <div className="text-center text-zinc-500 text-sm">{dayLabel(today)}</div>
-
-      {/* Day off banner */}
-      {isDayOff && (
-        <div className="bg-purple-900/30 border border-purple-500/40 rounded-xl p-3 text-center">
-          <span className="text-purple-300 font-semibold">🏖️ Day Off — minimum 7 pts guaranteed</span>
+      {/* Personal header */}
+      <div className={`flex items-center gap-3 bg-zinc-900 border ${meta.border} rounded-xl px-4 py-3`}>
+        <span className="text-3xl">{meta.emoji}</span>
+        <div>
+          <p className={`font-black text-lg capitalize ${meta.text}`}>{player}'s Log</p>
+          <p className="text-zinc-500 text-xs">{dayLabel(today)}</p>
         </div>
-      )}
+        {isDayOff && (
+          <span className="ml-auto text-xs bg-purple-900/40 text-purple-300 border border-purple-500/40 px-2 py-1 rounded-lg">🏖️ Day Off</span>
+        )}
+      </div>
 
       {/* Wake up */}
       <Section title="Wake Up — max 4 pts">
@@ -154,10 +132,7 @@ export default function DailyLog({ currentUser }) {
             />
             Sent wake-up message to group
           </label>
-          <button
-            onClick={saveWakeUp}
-            className="w-full bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded-lg text-sm transition-colors"
-          >
+          <button onClick={saveWakeUp} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded-lg text-sm transition-colors">
             {saved.wakeUp ? '✓ Saved!' : 'Save Wake-Up'}
           </button>
         </div>
@@ -180,9 +155,7 @@ export default function DailyLog({ currentUser }) {
                 <button
                   key={n}
                   onClick={() => setFoodPts(n)}
-                  className={`w-8 h-8 rounded-lg text-sm font-bold transition-colors ${
-                    foodPts === n ? 'bg-amber-500 text-black' : 'bg-zinc-800 text-zinc-400'
-                  }`}
+                  className={`w-8 h-8 rounded-lg text-sm font-bold transition-colors ${foodPts === n ? 'bg-amber-500 text-black' : 'bg-zinc-800 text-zinc-400'}`}
                 >
                   {n}
                 </button>
@@ -191,13 +164,10 @@ export default function DailyLog({ currentUser }) {
           </div>
           {entry.food?.votes && Object.keys(entry.food.votes).length > 0 && (
             <p className="text-xs text-zinc-500">
-              Final points (strictest vote): <span className="text-amber-400 font-bold">{entry.food.finalPoints}</span>
+              Final (strictest vote): <span className="text-amber-400 font-bold">{entry.food.finalPoints}</span>
             </p>
           )}
-          <button
-            onClick={saveFood}
-            className="w-full bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded-lg text-sm transition-colors"
-          >
+          <button onClick={saveFood} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded-lg text-sm transition-colors">
             {saved.food ? '✓ Saved!' : 'Save Food Log'}
           </button>
         </div>
@@ -215,10 +185,7 @@ export default function DailyLog({ currentUser }) {
           <span className="text-sm text-zinc-300">{addictionLabel}</span>
         </label>
         <p className="text-xs text-zinc-500">Points: <span className="text-amber-400 font-bold">{addictionOk ? 2 : 0}</span></p>
-        <button
-          onClick={saveAddiction}
-          className="w-full bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded-lg text-sm transition-colors"
-        >
+        <button onClick={saveAddiction} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded-lg text-sm transition-colors">
           {saved.addiction ? '✓ Saved!' : 'Save Addiction'}
         </button>
       </Section>
@@ -247,10 +214,7 @@ export default function DailyLog({ currentUser }) {
               />
               <PointsBadge points={previewWorkPoints} max={4} />
             </div>
-            <button
-              onClick={saveWork}
-              className="w-full bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded-lg text-sm transition-colors"
-            >
+            <button onClick={saveWork} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded-lg text-sm transition-colors">
               {saved.work ? '✓ Saved!' : 'Save Work'}
             </button>
           </div>
@@ -259,7 +223,7 @@ export default function DailyLog({ currentUser }) {
         )}
       </Section>
 
-      {/* Tomorrow's work goal */}
+      {/* Tomorrow's goal */}
       <Section title="Tomorrow's Work Goal">
         <div className="space-y-2">
           <input
@@ -288,9 +252,9 @@ export default function DailyLog({ currentUser }) {
             disabled={!tomorrowDesc || !tomorrowHours}
             className="w-full bg-zinc-800 hover:bg-zinc-700 disabled:opacity-40 text-white py-2 rounded-lg text-sm transition-colors"
           >
-            {saved.tomorrow ? '✓ Saved!' : 'Set Tomorrow\'s Goal'}
+            {saved.tomorrow ? '✓ Saved!' : "Set Tomorrow's Goal"}
           </button>
-          <p className="text-zinc-600 text-xs">Others will be able to veto this in the Votes tab</p>
+          <p className="text-zinc-600 text-xs">Others can veto this in the Votes tab</p>
         </div>
       </Section>
 
@@ -298,9 +262,9 @@ export default function DailyLog({ currentUser }) {
       {canUseDayOff && (
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
           <h3 className="text-zinc-400 font-semibold text-sm uppercase tracking-wide mb-2">Day Off 🏖️</h3>
-          <p className="text-zinc-500 text-xs mb-3">Use your weekly day off — today's points will be topped up to 7.</p>
+          <p className="text-zinc-500 text-xs mb-3">Use your weekly day off — score topped up to 7 pts minimum.</p>
           <button
-            onClick={useDayOff}
+            onClick={() => dispatch({ type: 'USE_DAY_OFF', player, date: today })}
             className="w-full bg-purple-900/40 hover:bg-purple-800/40 border border-purple-500/40 text-purple-300 py-2 rounded-lg text-sm transition-colors"
           >
             Use Day Off Today

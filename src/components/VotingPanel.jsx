@@ -12,7 +12,7 @@ export default function VotingPanel({ currentUser }) {
   const days = week ? getWeekDays(state.currentWeekId) : [];
   const pastAndToday = days.filter((d) => d <= today);
 
-  const [voter, setVoter] = useState(currentUser || 'emiliano');
+  const voter = currentUser;
 
   if (!week) return <div className="p-4 text-zinc-500 text-center">No active week</div>;
 
@@ -43,28 +43,16 @@ export default function VotingPanel({ currentUser }) {
   // Sick appeals
   const sickPlayers = PLAYERS.filter((p) => p !== voter && !week.sick?.[p]);
 
+  const meta = PLAYER_META[voter];
+
   return (
     <div className="flex flex-col gap-4 p-4">
-      {/* Voter selector */}
-      <div>
-        <p className="text-zinc-500 text-xs mb-2">You are voting as:</p>
-        <div className="flex gap-2">
-          {PLAYERS.map((p) => {
-            const m = PLAYER_META[p];
-            return (
-              <button
-                key={p}
-                onClick={() => setVoter(p)}
-                className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
-                  voter === p
-                    ? `bg-zinc-800 ${m.text} ring-1 ${m.ring}`
-                    : 'bg-zinc-900 text-zinc-500'
-                }`}
-              >
-                {m.emoji}
-              </button>
-            );
-          })}
+      {/* Voting identity */}
+      <div className={`flex items-center gap-3 bg-zinc-900 border ${meta.border} rounded-xl px-4 py-3`}>
+        <span className="text-2xl">{meta.emoji}</span>
+        <div>
+          <p className={`font-black text-base capitalize ${meta.text}`}>{voter}'s Votes</p>
+          <p className="text-zinc-500 text-xs">Voting on others' entries</p>
         </div>
       </div>
 

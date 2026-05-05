@@ -16,12 +16,33 @@ const TABS = [
   { id: 'summary',   label: 'Results', icon: '🏆' },
 ];
 
+function SwitchModal({ currentUser, onSwitch, onClose }) {
+  const meta = PLAYER_META[currentUser];
+  return (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-6">
+      <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 w-full max-w-xs text-center space-y-4">
+        <span className="text-4xl">{meta.emoji}</span>
+        <p className="text-white font-bold text-lg">Switch player?</p>
+        <p className="text-zinc-400 text-sm">You are currently logged in as <span className={`font-bold capitalize ${meta.text}`}>{currentUser}</span>. Your data is saved.</p>
+        <div className="flex gap-3">
+          <button onClick={onClose} className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white py-3 rounded-xl text-sm font-semibold transition-colors">
+            Stay
+          </button>
+          <button onClick={onSwitch} className="flex-1 bg-amber-500 hover:bg-amber-400 text-black py-3 rounded-xl text-sm font-bold transition-colors">
+            Switch
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AppShell() {
   const { state, dispatch } = useApp();
   const currentWeekId = getWeekId();
   const needsSetup = !state.weeks[currentWeekId];
+  const [showSwitchModal, setShowSwitchModal] = useState(false);
 
-  // Identity stored directly in localStorage — no state hydration issues
   const [currentUser, setCurrentUserState] = useState(
     () => localStorage.getItem('gd-user') || null
   );
@@ -35,6 +56,7 @@ function AppShell() {
   function switchPlayer() {
     localStorage.removeItem('gd-user');
     setCurrentUserState(null);
+    setShowSwitchModal(false);
   }
 
   if (!currentUser) {
@@ -50,25 +72,28 @@ function AppShell() {
           <span className="text-2xl">🐉</span>
           <span className="text-lg font-black text-amber-400 tracking-tight">Golden Dragon</span>
         </div>
-        <div className="flex items-center gap-3">
-          {state.currentWeekId && (
-            <span className="text-amber-400 font-bold text-sm">€60 pot</span>
-          )}
-          <button
-            onClick={switchPlayer}
-            className={`flex items-center gap-1.5 bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded-xl text-sm font-semibold transition-colors ${meta.text}`}
-          >
+        <div className="flex items-center gap-2">
+          {/* Static identity — not a nav button */}
+          <div className={`flex items-center gap-1.5 bg-zinc-800 px-3 py-1.5 rounded-xl text-sm font-semibold ${meta.text}`}>
             <span>{meta.emoji}</span>
             <span className="capitalize">{currentUser}</span>
+          </div>
+          {/* Explicit switch button */}
+          <button
+            onClick={() => setShowSwitchModal(true)}
+            className="bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-2 py-1.5 rounded-xl text-xs transition-colors"
+            title="Switch player"
+          >
+            ⇄
           </button>
         </div>
       </header>
 
       <main className="flex-1 overflow-y-auto pb-20">
-        {state.activeTab === 'dashboard' && <Dashboard />}
+        {state.activeTab === 'dashboard' && <Dashboard currentUser={currentUser} />}
         {state.activeTab === 'log'       && <DailyLog currentUser={currentUser} />}
         {state.activeTab === 'votes'     && <VotingPanel currentUser={currentUser} />}
-        {state.activeTab === 'summary'   && <WeekSummary />}
+        {state.activeTab === 'summary'   && <WeekSummary currentUser={currentUser} />}
       </main>
 
       <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-zinc-900/90 backdrop-blur border-t border-zinc-800 flex z-40">
@@ -87,6 +112,14 @@ function AppShell() {
       </nav>
 
       {needsSetup && <WeekSetup onDone={() => dispatch({ type: 'SET_TAB', tab: 'dashboard' })} />}
+
+      {showSwitchModal && (
+        <SwitchModal
+          currentUser={currentUser}
+          onSwitch={switchPlayer}
+          onClose={() => setShowSwitchModal(false)}
+        />
+      )}
     </div>
   );
 }
