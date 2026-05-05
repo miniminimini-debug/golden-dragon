@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@layer base {
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background-color: #09090b;
+    color: #fafafa;
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  #root {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+  input, textarea, select {
+    color-scheme: dark;
+  }
+}
