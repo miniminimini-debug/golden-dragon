@@ -23,10 +23,10 @@ function PointsBadge({ points, max }) {
   );
 }
 
-export default function DailyLog() {
+export default function DailyLog({ currentUser }) {
   const { state, dispatch } = useApp();
   const today = todayKey();
-  const player = state.selectedPlayer;
+  const player = currentUser || state.selectedPlayer;
   const week = state.weeks[state.currentWeekId];
   const entry = week?.days?.[today]?.[player] || {};
   const meta = PLAYER_META[player];

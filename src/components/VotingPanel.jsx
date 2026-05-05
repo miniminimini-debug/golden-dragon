@@ -5,14 +5,14 @@ import { todayKey, getWeekDays } from '../utils/dates.js';
 
 const PLAYERS = ['emiliano', 'nico', 'bruno'];
 
-export default function VotingPanel() {
+export default function VotingPanel({ currentUser }) {
   const { state, dispatch } = useApp();
   const week = state.weeks[state.currentWeekId];
   const today = todayKey();
   const days = week ? getWeekDays(state.currentWeekId) : [];
   const pastAndToday = days.filter((d) => d <= today);
 
-  const [voter, setVoter] = useState('emiliano');
+  const [voter, setVoter] = useState(currentUser || 'emiliano');
 
   if (!week) return <div className="p-4 text-zinc-500 text-center">No active week</div>;
 
