@@ -37,9 +37,9 @@ const RULES = [
   },
   {
     number: 7,
-    title: 'Addiction — max 2 pts',
-    icon: '🚫',
-    text: 'Worth 2 pts if maintained, 0 if not. Addiction is player-specific: some players must not smoke; others must not use Instagram or X for more than 15 minutes in any single hour.',
+    title: 'Addiction — max 4 pts',
+    icon: '🚭',
+    text: 'Worth 4 pts if maintained, 0 if not. Addiction is player-specific: some players must not smoke; others must not use Instagram or X for more than 15 minutes in any single hour.',
   },
   {
     number: 8,
@@ -71,8 +71,8 @@ export default function Rules() {
       </div>
 
       <div className="bg-zinc-900 border border-amber-900/40 rounded-xl p-4 text-center">
-        <p className="text-amber-300 text-sm font-semibold">Max points per day: 14</p>
-        <p className="text-zinc-500 text-xs mt-1">Wake-up (4) + Food (4) + Addiction (2) + Work (4)</p>
+        <p className="text-amber-300 text-sm font-semibold">Max points per day: 16</p>
+        <p className="text-zinc-500 text-xs mt-1">Wake-up (4) + Food (4) + Addiction (4) + Work (4)</p>
       </div>
 
       <div className="space-y-3">

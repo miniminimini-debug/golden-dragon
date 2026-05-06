@@ -1,3 +1,6 @@
+// Week starts Wednesday (day=3), ends Tuesday (day=2).
+// weekId = the Wednesday date string: "2026-05-06"
+
 export function todayKey() {
   return new Date().toISOString().split('T')[0];
 }
@@ -5,22 +8,14 @@ export function todayKey() {
 export function getWeekId(date = new Date()) {
   const d = new Date(date);
   d.setHours(12, 0, 0, 0);
-  const day = d.getDay() === 0 ? 7 : d.getDay();
-  d.setDate(d.getDate() + 4 - day);
-  const yearStart = new Date(d.getFullYear(), 0, 1);
-  const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-  return `${d.getFullYear()}-W${String(weekNo).padStart(2, '0')}`;
+  const day = d.getDay(); // 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+  const daysFromWed = (day + 4) % 7; // 0 on Wed, 6 on Tue
+  d.setDate(d.getDate() - daysFromWed);
+  return d.toISOString().split('T')[0];
 }
 
 export function getWeekStart(weekId) {
-  const [yearStr, weekStr] = weekId.split('-W');
-  const year = parseInt(yearStr);
-  const week = parseInt(weekStr);
-  const jan4 = new Date(year, 0, 4);
-  const jan4Day = jan4.getDay() === 0 ? 7 : jan4.getDay();
-  const weekStart = new Date(jan4);
-  weekStart.setDate(jan4.getDate() - jan4Day + 1 + (week - 1) * 7);
-  return weekStart;
+  return new Date(weekId + 'T12:00:00');
 }
 
 export function getWeekDays(weekId) {
@@ -53,4 +48,16 @@ export function weekRangeLabel(weekId) {
   end.setDate(start.getDate() + 6);
   const fmt = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   return `${fmt(start)} – ${fmt(end)}`;
+}
+
+export function prevWeekId(weekId) {
+  const d = getWeekStart(weekId);
+  d.setDate(d.getDate() - 7);
+  return d.toISOString().split('T')[0];
+}
+
+export function nextWeekId(weekId) {
+  const d = getWeekStart(weekId);
+  d.setDate(d.getDate() + 7);
+  return d.toISOString().split('T')[0];
 }

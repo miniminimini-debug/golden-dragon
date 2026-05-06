@@ -41,4 +41,4 @@ export function calcWeekTotal(playerKey, weekData) {
   }, 0);
 }
 
-export const MAX_DAY_POINTS = 14;
+export const MAX_DAY_POINTS = 16;
