@@ -28,7 +28,7 @@ export function calcDayTotal(entry, isDayOff) {
     (entry.food?.finalPoints ?? 0) +
     (entry.addiction?.points ?? 0) +
     (entry.work?.points ?? 0);
-  return isDayOff ? Math.max(7, base) : base;
+  return isDayOff ? Math.max(8, base) : base;
 }
 
 export function calcWeekTotal(playerKey, weekData) {

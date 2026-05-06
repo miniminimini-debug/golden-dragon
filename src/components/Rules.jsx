@@ -51,7 +51,7 @@ const RULES = [
     number: 9,
     title: 'Day Off — once per week',
     icon: '🏖️',
-    text: 'Once per week, you can declare a day off. On that day, you receive enough bonus points to bring your daily total up to 7, even if you achieved fewer through normal activities.',
+    text: 'Once per week, you can declare a day off. On that day, you receive enough bonus points to bring your daily total up to 8, even if you achieved fewer through normal activities.',
   },
   {
     number: 10,

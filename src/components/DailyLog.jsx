@@ -388,7 +388,7 @@ function DayLogForm({ player, date, weekId, week, dispatch, settings, isHistoric
       {canUseDayOff && (
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
           <h3 className="text-zinc-400 font-semibold text-sm uppercase tracking-wide mb-2">Day Off 🏖️</h3>
-          <p className="text-zinc-500 text-xs mb-3">Use your weekly day off — score topped up to 7 pts minimum.</p>
+          <p className="text-zinc-500 text-xs mb-3">Use your weekly day off — score topped up to 8 pts minimum.</p>
           <button
             onClick={() => dispatch({ type: 'USE_DAY_OFF', weekId, player, date })}
             className="w-full bg-purple-900/40 hover:bg-purple-800/40 border border-purple-500/40 text-purple-300 py-2 rounded-lg text-sm transition-colors"
